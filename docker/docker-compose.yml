@@ -1,0 +1,96 @@
+# =====================================================================
+# DOCKER COMPOSE - GESTION TALLERES 2000
+# Backend Spring Boot + MySQL
+# =====================================================================
+
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------------
+  # MYSQL DATABASE
+  # -------------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: gt2000_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: gestion_talleres
+      MYSQL_USER: admin_taller
+      MYSQL_PASSWORD: Taller2026*
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - gt2000_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------------------
+  # BACKEND SPRING BOOT
+  # -------------------------------------------------------------------
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: gt2000_backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gestion_talleres?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: admin_taller
+      SPRING_DATASOURCE_PASSWORD: Taller2026*
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: GestionTalleres2000SecretKeyParaJWT2026NahidLarhzialeOulladaDAM
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gt2000_network
+    volumes:
+      - uploads_data:/app/uploads
+
+  # -------------------------------------------------------------------
+  # PHPMYADMIN (Opcional - para administración de BD)
+  # -------------------------------------------------------------------
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: gt2000_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: admin_taller
+      PMA_PASSWORD: Taller2026*
+    ports:
+      - "8081:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gt2000_network
+    profiles:
+      - admin
+
+# -------------------------------------------------------------------
+# VOLUMES (Datos persistentes)
+# -------------------------------------------------------------------
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+# -------------------------------------------------------------------
+# RED (Comunicación entre contenedores)
+# -------------------------------------------------------------------
+networks:
+  gt2000_network:
+    driver: bridge

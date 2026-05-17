@@ -1,0 +1,14 @@
+*.class
+*.log
+*.jar
+*.war
+*.ear
+.DS_Store
+.idea/
+*.iml
+build/
+target/
+.gradle/
+*.apk
+*.aab
+local.properties

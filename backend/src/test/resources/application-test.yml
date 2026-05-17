@@ -1,0 +1,29 @@
+# Configuración para tests
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # Desactivar servlet multipart para tests
+  servlet:
+    multipart:
+      enabled: false
+
+jwt:
+  secret: TestSecretKeyParaJWTDePruebas2026NahidTest
+  expiration: 86400000
+
+logging:
+  level:
+    root: WARN
+    com.gt2000: DEBUG
