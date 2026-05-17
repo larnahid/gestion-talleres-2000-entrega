@@ -39,31 +39,57 @@ usuario, pruebas...
 
 ---
 
+## Requisitos previos
+
+### Software necesario
+
+- **Docker Desktop** - Para la base de datos MySQL
+- **Java JDK 17+** - Para ejecutar el backend
+- **Maven** - Para gestionar dependencias del backend
+- **Flutter SDK** - Para la aplicación móvil
+- **Android Studio** - Para emulateor/dispositivo Android
+- **Git** - Para control de versiones
+
+### Verificar instalaciones
+
+```powershell
+docker --version
+java -version
+mvn -version
+flutter --version
+```
+
+---
+
 ## Guía rápida de arranque
 
-### 1. Arrancar MySQL
+### Orden de ejecución (importante seguir este orden)
 
-```powershell
-cd docker
-docker-compose up -d
-```
+1. **Android Studio** - Abrir el proyecto `frontend/` (necesario para que Flutter detecte el emulador)
+2. **Docker Desktop** - Esperar a que muestre "Running"
+3. **MySQL (Docker):**
+   ```powershell
+   cd docker
+   docker-compose up -d
+   ```
+4. **Backend (Maven):**
+   ```powershell
+   cd backend
+   mvn spring-boot:run
+   ```
+5. **Flutter:**
+   ```powershell
+   cd frontend
+   flutter run
+   ```
 
-### 2. Arrancar backend
-
-```powershell
-cd backend
-mvn spring-boot:run
-```
-
-Backend disponible en: http://localhost:8085
-
-### 3. Verificación
+### Verificación
 
 Visita: http://localhost:8085/api/auth/health
 
 Debe mostrar:
 ```json
-{"success":true,"message":"API funcionando correctamente","data":"OK"}
+{"success":true,"message":"API funciona correctamente","data":"OK"}
 ```
 
 ---
